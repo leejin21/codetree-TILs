@@ -57,12 +57,14 @@ def pickAttacker():
 
     return pickTurret
             
-def pickDefender():
+def pickDefender(attacker):
     pickTurret = Turret(0, -1, -1, 0)
 
     for ri, rv in enumerate(locationMap):
         for ci, turret in enumerate(rv):
             if turret.strength == 0:
+                continue
+            if attacker.row == ri and attacker.column == ci:
                 continue
 
             if pickTurret.strength < turret.strength:
@@ -231,7 +233,7 @@ def solution():
         initTurrets()
         # 1. 공격자, 타겟 선정
         attacker = pickAttacker()
-        defender = pickDefender()
+        defender = pickDefender(attacker)
 
         attacker.strength += N + M
         attacker.minPath = 0
@@ -259,7 +261,7 @@ def solution():
 
         k += 1
 
-    print(pickDefender().strength)
+    print(pickDefender(Turret(-1,-1,-1,0)).strength)
 
 
 N, M, K = [int(i) for i in input().split()]
