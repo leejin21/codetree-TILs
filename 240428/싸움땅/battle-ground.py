@@ -9,6 +9,8 @@ from collections import deque
 drList = [-1, 0, 1, 0]
 dcList = [0, 1, 0, -1]
 
+dirDict = {0: '↑', 1: '→', 2: '↓', 3: '←'}
+
 class GameResult:
     def __init__(self, winner, loser, point):
         self.winner = winner
@@ -53,6 +55,11 @@ def prettyPrintPlayerGrid():
                 _str += str(player.num) + ", "
             print(f'[{_str[:-2] :<4}]', end = " ")
         print("")
+
+def prettyPrintPlayer():
+    print("===player info===")
+    for p in playerList:
+        print(p.num, ":  dir=", dirDict[p.direction], ", baseStrength= ", p.baseStrength, ", gunStrength= ", p.gunStrength, ", point= ", p.point )
     
 def getOppositeDirection(direction):
     return (direction+2)%4
@@ -77,6 +84,8 @@ def changeToBestGun(gunQ, player):
             if player.gunStrength != 0: # only when player have gun
                 gunQ.append(player.gunStrength)
             player.gunStrength = candGun
+        else:
+            gunQ.append(candGun)
     
 def normalMove(nextArea, player):
     '''   
@@ -104,12 +113,12 @@ def getGameResult(player1, player2):
     if player1Tot > player2Tot:
         return GameResult(player1, player2, point)
     elif player2Tot > player1Tot:
-        return GameResult(player1, player2, point)
+        return GameResult(player2, player1, point)
     else:
         if player1.baseStrength > player2.baseStrength:
             return GameResult(player1, player2, point)
         else:
-            return GameResult(player1, player2, point)
+            return GameResult(player2, player1, point)
 
 def getNextRowColWhenLose(player):
     dr = drList[player.direction]
@@ -118,9 +127,9 @@ def getNextRowColWhenLose(player):
     next_r = player.row + dr
     next_c = player.column + dc
     
-    nextArea = grid[next_r][next_c]
-
+    
     if 0 <= next_r < N and 0 <= next_c < N:
+        nextArea = grid[next_r][next_c]
         if len(nextArea.stationedPlayer) == 0:
             return next_r, next_c
 
@@ -162,12 +171,13 @@ def movePlayer(player):
     nextArea = grid[next_r][next_c]
 
     if not nextArea.stationedPlayer: # no player
+        # print("++", player.num, " NORMAL MOVE")
         normalMove(nextArea, player)
         if nextArea.gunQueue:
             changeToBestGun(nextArea.gunQueue, player)
         
     else:                            # yes player
-
+        # print("++", player.num, " NOT NORMAL MOVE")
         oldPlayer = nextArea.stationedPlayer[0]
         newPlayer = player
 
@@ -180,8 +190,9 @@ def movePlayer(player):
 
         # winner get point
         winner.point += gameResult.point
-        # loser dump gun
-        nextArea.gunQueue.append(loser.gunStrength)
+        # loser dump gun only when has the gun
+        if (loser.gunStrength != 0):
+            nextArea.gunQueue.append(loser.gunStrength)
         loser.gunStrength = 0
         # winner can get gun
         changeToBestGun(nextArea.gunQueue, winner)
@@ -210,11 +221,12 @@ def solution():
         # prettyPrintGunGrid()
         # prettyPrintPlayerGrid()
         # 이동
-        # print("====1. 이동====")
+        # print("====", turn , ". 이동====")
         for player in playerList:
             movePlayer(player)
             # prettyPrintGunGrid()
             # prettyPrintPlayerGrid()
+            # prettyPrintPlayer()
         turn += 1
 
     getPoint()
