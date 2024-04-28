@@ -231,6 +231,9 @@ def killTree():
     # print("--kill tree--")
     maxKillTreeCnt, saveGridForKill = selectAreaToGetToxic()
 
+    applyNewYear()
+    # prettyPrintGrid()
+
     # kill tree
     for r in range(N):
         for c in range(N):
@@ -238,7 +241,8 @@ def killTree():
                 continue
             
             area = grid[r][c]
-            area.num = 0
+            if area.num != -1:
+                area.num = 0
             area.remainToxic = C
 
     return maxKillTreeCnt
@@ -258,16 +262,14 @@ def solution():
     while(turn <= M):
         # print("=======TURN: ", turn, "=======")
         growTree()
-        # if turn == 2: prettyPrintGrid()
+        # prettyPrintGrid()
         makeTree()
-        # if turn == 2: prettyPrintGrid()
+        # prettyPrintGrid()
 
-        applyNewYear()
-        # if turn == 2: prettyPrintGrid()
         killedNum = killTree()
         turn += 1
         totalKilled += killedNum
-        # if turn == 2: prettyPrintGrid()
+        # prettyPrintGrid()
 
     print(totalKilled)
         
