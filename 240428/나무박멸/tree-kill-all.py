@@ -48,7 +48,7 @@ class Area:
         self.remainToxic = 0
 
 def prettyPrintGrid():
-    print("<<normal grid>>")
+    # print("<<normal grid>>")
     for tl in grid:
         for area in tl:
             print(f'[{area.num: <3}|{area.remainToxic: <2}]', end = "")
@@ -154,13 +154,12 @@ def getTreeCnt(dn, k, r, c):
     # dr = direction number, k = radius, r = row, c = column
     area = grid[r][c]
     nextGrid[r][c] = 1
-
-    if k >= K:
-        return area.num
     if area.num == -1:
         return 0
     if area.num == 0:
         return 0
+    if k >= K:
+        return area.num
     
     dr, dc = diDrList[dn], diDcList[dn]
     next_r = r + dr; next_c = c + dc
@@ -237,12 +236,12 @@ def killTree():
         성장, 번식 process에도 영향감
         제초제 수명 = c
     '''
-    # print("--kill tree--")
+
     maxKillTreeCnt, saveGridForKill = selectAreaToGetToxic()
 
     applyNewYear()
     # prettyPrintGrid()
-
+    # print("--kill tree--")    
     # kill tree
     for r in range(N):
         for c in range(N):
