@@ -216,6 +216,15 @@ def selectAreaToGetToxic():
             if maxKillTreeCnt < killTreeCnt:
                 maxKillTreeCnt = killTreeCnt
                 deepCopyGrid(nextGrid, saveGridForKill)
+                target = area
+            elif maxKillTreeCnt == killTreeCnt:
+                if target.row > area.row:
+                    deepCopyGrid(nextGrid, saveGridForKill)
+                    target = area
+                elif target.row == area.row:
+                    if target.col > area.col:
+                        deepCopyGrid(nextGrid, saveGridForKill)
+                        target = area
         # print("")
 
     # prettyPrintToxicGrid(maxKillTreeCnt, saveGridForKill)        
